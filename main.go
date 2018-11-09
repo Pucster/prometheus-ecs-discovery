@@ -42,7 +42,7 @@ type labels struct {
 	MetricsPath   string `yaml:"__metrics_path__,omitempty"`
 }
 
-var outFile = flag.String("config.write-to", "ecs_file_sd.yml", "path of file to write ECS service discovery information to")
+var outFile = flag.String("config.write-to", "springboot-prom-actuators.yml", "path of file to write ECS service discovery information to")
 var interval = flag.Duration("config.scrape-interval", 60*time.Second, "interval at which to scrape the AWS API for ECS service discovery information")
 var times = flag.Int("config.scrape-times", 0, "how many times to scrape before exiting (0 = infinite)")
 
@@ -183,7 +183,7 @@ func (t *AugmentedTask) ExporterInformation() []*PrometheusTaskInfo {
 			continue
 		}
 
-		v, ok := d.DockerLabels["PROMETHEUS_EXPORTER_PORT"]
+		v, ok := d.DockerLabels["PROMETHEUS_ACTUATOR_PORT"]
 		if !ok {
 			// Nope, no Prometheus-exported port in this container def.
 			// This container is no good.  We continue.
@@ -216,7 +216,7 @@ func (t *AugmentedTask) ExporterInformation() []*PrometheusTaskInfo {
 			hostPort = int64(exporterPort)
 		}
 
-		exporterServerName, ok = d.DockerLabels["PROMETHEUS_EXPORTER_SERVER_NAME"]
+		exporterServerName, ok = d.DockerLabels["PROMETHEUS_ACTUATOR_SERVER_NAME"]
 		if ok {
 			host = strings.TrimRight(exporterServerName, "/")
 		} else {
@@ -235,7 +235,7 @@ func (t *AugmentedTask) ExporterInformation() []*PrometheusTaskInfo {
 			DockerImage:   *d.Image,
 		}
 
-		exporterPath, ok = d.DockerLabels["PROMETHEUS_EXPORTER_PATH"]
+		exporterPath, ok = d.DockerLabels["PROMETHEUS_ACTUATOR_PATH"]
 		if ok {
 			labels.MetricsPath = exporterPath
 		}

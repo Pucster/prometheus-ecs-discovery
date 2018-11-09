@@ -1,0 +1,11 @@
+language: go
+go:
+  - "1.10"
+script: go build
+deploy:
+  provider: releases
+  api_key: "fe928d3da2c59ad42487afa260b3bb69a75a3d63"
+  file: "prometheus-springboot-actuator-ecs-discovery"
+  skip_cleanup: true
+  on:
+    tags: true
